@@ -2,10 +2,10 @@ import requests
 import base64 
 import json
 import urllib
+
+
 next_page = False
 next_page_token = "" 
-
-  
  
 def authorization_token(username, password):
 	 user_pass = f"{username}:{password}"
@@ -46,11 +46,9 @@ def func(payload_input, url, username, password):
     else :
       file_length = len(decrypted_response["data"]["files"])
       for i, _ in enumerate(range(file_length)):
-	       
 	        files_type   = decrypted_response["data"]["files"][i]["mimeType"] 
 	        files_name   = decrypted_response["data"]["files"][i]["name"] 
-	      
-	
+	     
 	        if files_type == "application/vnd.google-apps.folder": pass
 	        else:
 	            direct_download_link = url + urllib.parse.quote(files_name)
@@ -72,6 +70,6 @@ def main(url, username="none", password="none"):
 
 index_link = "https://anime.anipirates.workers.dev/0:/Breaking%20Bad%20(2008)%20Season%201-5%20S01-S05%20(1080p%20BluRay%20x265%20HEVC%2010bit%20AAC%205.1%20Silence)/Season%201/"
 username = "username-default" #optional
-password ="password-default"  #optional
+password = "password-default" #optional
 				
 main(url=index_link, username=username, password=password)
