@@ -9,8 +9,7 @@ next_page_token = ""
  
 def authorization_token(username, password):
 	 user_pass = f"{username}:{password}"
-	 token ="Basic "+ base64.b64encode(user_pass.encode()).decode()
-	 return token
+	 return f"Basic {base64.b64encode(user_pass.encode()).decode()}"
 
 	 	 
 def decrypt(string): 
@@ -18,42 +17,40 @@ def decrypt(string):
 
   
 def func(payload_input, url, username, password): 
-    global next_page 
-    global next_page_token
-    
-    url = url + "/" if  url[-1] != '/' else url
-         
-    try: headers = {"authorization":authorization_token(username,password)}
-    except: return "username/password combination is wrong"
- 
-    encrypted_response = requests.post(url, data=payload_input, headers=headers)
-    if encrypted_response.status_code == 401: return "username/password combination is wrong"
-   
-    try: decrypted_response = json.loads(decrypt(encrypted_response.text))
-    except: return "something went wrong. check index link/username/password field again"
-       
-    page_token = decrypted_response["nextPageToken"] 
-    if page_token == None: 
-        next_page = False 
-    else: 
-        next_page = True 
-        next_page_token = page_token 
-   
-     
-    result = ""
-   
-    if list(decrypted_response.get("data").keys())[0] == "error": pass
-    else :
-      file_length = len(decrypted_response["data"]["files"])
-      for i, _ in enumerate(range(file_length)):
-	        files_type   = decrypted_response["data"]["files"][i]["mimeType"] 
-	        files_name   = decrypted_response["data"]["files"][i]["name"] 
-	     
-	        if files_type == "application/vnd.google-apps.folder": pass
-	        else:
-	            direct_download_link = url + urllib.parse.quote(files_name)
-	            result += f"• {files_name}:-\n{direct_download_link}\n\n"
-      return result
+	 global next_page
+	 global next_page_token
+
+	 url = f"{url}/" if url[-1] != '/' else url
+
+	 try: headers = {"authorization":authorization_token(username,password)}
+	 except: return "username/password combination is wrong"
+
+	 encrypted_response = requests.post(url, data=payload_input, headers=headers)
+	 if encrypted_response.status_code == 401: return "username/password combination is wrong"
+
+	 try: decrypted_response = json.loads(decrypt(encrypted_response.text))
+	 except: return "something went wrong. check index link/username/password field again"
+
+	 page_token = decrypted_response["nextPageToken"]
+	 if page_token is None: 
+	 	 next_page = False
+	 else: 
+	 	 next_page = True 
+	 	 next_page_token = page_token 
+
+
+	 if list(decrypted_response.get("data").keys())[0] != "error":
+	 	 file_length = len(decrypted_response["data"]["files"])
+	 	 result = ""
+
+	 	 for i, _ in enumerate(range(file_length)):
+	 	 	 files_type   = decrypted_response["data"]["files"][i]["mimeType"]
+	 	 	 if files_type != "application/vnd.google-apps.folder":
+	 	 	 	 files_name   = decrypted_response["data"]["files"][i]["name"] 
+
+	 	 	 	 direct_download_link = url + urllib.parse.quote(files_name)
+	 	 	 	 result += f"• {files_name}:-\n{direct_download_link}\n\n"
+	 	 return result
 	        
 	
 def main(url, username="none", password="none"):
