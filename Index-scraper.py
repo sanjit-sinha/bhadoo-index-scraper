@@ -64,7 +64,7 @@ def main(url, username="none", password="none"):
     print(f"Index Link: {url}\n\n")
     print(func(payload, url, username, password))
 
-    while next_page == True:
+    while next_page:
         payload = {"page_token": next_page_token, "page_index": x}
         print(func(payload, url, username, password))
         x += 1
