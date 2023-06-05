@@ -24,7 +24,7 @@ def func(payload_input, url, username, password):
     url = f"{url}/" if url[-1] != "/" else url
 
     try:
-        headers = {"authorization": authorization_token(username, password)}
+        headers = {"authorization": authorization_token(username, password), "Referer": index_link}
     except:
         return "username/password combination is wrong"
 
